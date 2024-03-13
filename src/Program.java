@@ -1,22 +1,23 @@
 class Program {
     public static void main(String[] args) {
-        Product milk1 = new Milk("Молком 2,5%", 69.90);
-        Product coffee1 = new Coffee("Нескафе", 99.90);
-        Product bread1 = new Bread("КрайКаравай Горичный", 41.90);
+        IProduct milk1 = new Milk("Молком 2,5%", 69.90);
+        IProduct coffee1 = new Coffee("Нескафе", 99.90);
+        IProduct bread1 = new Bread("КрайКаравай Горичный", 41.90);
 
-        User buyer1 = new Buyer("Смирнов В.В.", "rrr2003", "krutoi2003@gmail.com");
+        IUser buyer1 = new Buyer("Смирнов В.В.", "rrr2003", "krutoi2003@gmail.com");
 
         Transaction transaction = new Transaction(milk1, buyer1);
+        transaction.doTransaction();
     }
 }
 
-interface Product{
+interface IProduct{
     String getNameProduct();
     double getCost();
     void setRating(int rating);
     double getRating();
 }
-class Milk implements Product{
+class Milk implements IProduct{
     String nameProduct;
     double cost;
     double rating = 5;
@@ -46,7 +47,7 @@ class Milk implements Product{
         return rating;
     }
 }
-class Coffee implements Product{
+class Coffee implements IProduct{
     String nameProduct;
     double cost;
     double rating = 5;
@@ -76,7 +77,7 @@ class Coffee implements Product{
         return rating;
     }
 }
-class Bread implements Product{
+class Bread implements IProduct{
     String nameProduct;
     double cost;
     double rating = 5;
@@ -107,14 +108,14 @@ class Bread implements Product{
     }
 }
 
-interface User{
+interface IUser{
     String getNameUser();
     void setPassword(String password);
     String getPassword();
     void setLogin(String login);
     String getLogin();
 }
-class Buyer implements User, Product{
+class Buyer implements IUser, IProduct{
     String name;
     String password;
     String login;
@@ -170,7 +171,7 @@ class Buyer implements User, Product{
         return 0;
     }
 }
-class Seller implements User{
+class Seller implements IUser{
     String name;
     String password;
     String login;
@@ -206,7 +207,7 @@ class Seller implements User{
         return login;
     }
 }
-class Provider implements User{
+class Provider implements IUser{
     String name;
     String password;
     String login;
@@ -243,14 +244,16 @@ class Provider implements User{
     }
 }
 
-class Transaction implements Product, User{
-    Product product;
-    User user;
+class Transaction implements IProduct, IUser{
+    IProduct product;
+    IUser user;
 
-    public Transaction(Product product, User user) {
+    public Transaction(IProduct product, IUser user) {
         this.product = product;
         this.user = user;
+    }
 
+    public void doTransaction(){
         System.out.printf("Пользователь %s купил \"%s\" (%.2f ₽) (★ %.2f)\n",
                 user.getNameUser(), product.getNameProduct(), product.getCost(), product.getRating());
     }
